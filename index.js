@@ -6,11 +6,18 @@ const path = require("path");
 
 const PORT = 3000;
 
+var totalUsers = 0;
+
 app.use(express.static(path.join(__dirname, "public")));
 
 io.on("connection", function(socket) {
-    socket.on("chat message", function(msg) {
-        io.emit("chat message", msg);
+    totalUsers++;
+
+    socket.on("chat message", function(data) {
+        if (data.username == null) {
+            data.username = `Guest ${totalUsers}`;
+        }
+        io.emit("chat message", data);
     });
 });
 
